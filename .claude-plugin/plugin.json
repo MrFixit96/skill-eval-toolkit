@@ -1,0 +1,10 @@
+{
+  "name": "skill-eval-toolkit",
+  "version": "1.0.0",
+  "description": "Complete skill evaluation, improvement, and quality assurance toolkit. Provides agents, commands, and knowledge for the diagnose-research-fix-validate cycle.",
+  "author": {
+    "name": "James Anderton"
+  },
+  "license": "MIT",
+  "keywords": ["skills", "evaluation", "quality", "improvement", "testing", "lint"]
+}
