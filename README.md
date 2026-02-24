@@ -195,6 +195,8 @@ skill-eval-toolkit/
 ├── commands/
 │   ├── eval-skills.md        # /eval-skills command
 │   └── improve-skill.md      # /improve-skill command
+├── docs/
+│   └── ai-coding-agent-comparison.md  # Platform comparison matrix
 ├── skills/
 │   └── skill-eval/
 │       └── SKILL.md          # Eval framework knowledge
@@ -211,6 +213,7 @@ skill-eval-toolkit/
 │   ├── gepa-optimizer.md     # Phase 3: evolutionary search
 │   └── README.md             # Workflow-specific docs
 ├── .gitignore
+├── CROSS-PLATFORM.md         # Cross-platform implementation guide
 ├── LICENSE                   # MIT
 └── README.md                 # This file
 ```
@@ -222,6 +225,13 @@ skill-eval-toolkit/
 - Skill names are **validated against the `skills/` directory listing** before any file operations to prevent path traversal
 - Network access is restricted to an **explicit domain allowlist** per workflow
 - Bot-triggered runs are skipped via `skip-bots` to prevent infinite loops
+
+## Cross-Platform Support
+
+This plugin's core primitives (commands, agents, skills) work in both **GitHub Copilot CLI** and **Claude Code** natively — they share the same `plugin.json` format. The CI/CD workflows can be adapted for **Gemini CLI** and **Codex CLI** as well.
+
+- 📘 **[Cross-Platform Implementation Guide](CROSS-PLATFORM.md)** — How to run these workflows on Claude Code, Gemini CLI, and Codex CLI with concrete examples for each platform.
+- 📊 **[AI Coding Agent Comparison Matrix](docs/ai-coding-agent-comparison.md)** — Full 26-capability comparison of all four platforms: feature matrix, hook events, plugin primitives, cost models, and architecture diagrams.
 
 ## License
 
