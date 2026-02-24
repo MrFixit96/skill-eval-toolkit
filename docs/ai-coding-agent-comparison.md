@@ -401,6 +401,87 @@
 
 ---
 
+## Key Relationship Insights
+
+Analysis of cross-platform relationships reveals structural patterns in how these platforms converge and differentiate.
+
+### Compatibility Triangle
+
+Three platforms form a **strong compatibility cluster** — they can share configuration files with minimal or no conversion:
+
+```
+         Claude Code
+        /            \
+  plugin.json    .claude/skills/
+  SKILL.md          CLAUDE.md
+      /                  \
+Copilot CLI ———————— OpenCode
+  .agents/skills/    reads ALL three:
+  AGENTS.md          .opencode/, .claude/, .agents/
+```
+
+| Platform A | Platform B | Shared Formats |
+|-----------|-----------|---------------|
+| Claude Code | Copilot CLI | `plugin.json`, SKILL.md spec, same plugin system |
+| OpenCode | Claude Code | Reads `.claude/skills/` and `CLAUDE.md` natively |
+| OpenCode | Copilot CLI | Reads `.agents/skills/`; `AGENTS.md` standard |
+| Gemini CLI | OpenCode | `GEMINI.md` ↔ `AGENTS.md` conceptually similar (medium compatibility) |
+
+> **Implication:** A plugin built for Copilot CLI works on Claude Code with zero changes, and OpenCode can consume skills from both without conversion.
+
+### Capability Dependency Chain
+
+Capabilities aren't independent — they form an **enables chain** where foundational primitives unlock higher-order features:
+
+```
+CLI Agent ──→ Headless/SDK Mode ──→ CI/CD Action ──→ Scheduled Eval
+                                        │
+Skills ──→ Custom Agents ──→ Subagents ──→ Multi-Agent Orchestration
+                                        │
+Plugin System ──→ Hooks (Lifecycle) ──→ Custom Themes
+                                        │
+MCP Integration ──→ Web Search, Browser Agent (gap-fill via servers)
+```
+
+**Key insight:** Every platform has the full CLI → Headless → CI/CD → Scheduled Eval chain (universal baseline). The differentiation happens in the **extensibility** and **orchestration** branches — platforms without Plugin System also lack Hooks, and platforms without Subagents cannot offer Multi-Agent Orchestration.
+
+### Platform Leadership by Capability
+
+Each platform leads in a specific domain — no single platform dominates all:
+
+| Domain | Leader | Why |
+|--------|--------|-----|
+| **Hook System** | OpenCode | 30+ plugin events — most granular of any platform (vs 6 on Claude/Copilot, ~8 on Gemini) |
+| **Multi-Agent** | Claude Code | Agent Teams with parallel dispatch + git worktree isolation — only platform with true parallel multi-agent |
+| **Remote Agents** | Gemini CLI | Agent-to-Agent (A2A) protocol — most standardized inter-agent communication |
+| **Security Sandbox** | Copilot CLI | AWF safe-outputs pipeline — all writes go through auditable output channels, never direct filesystem |
+
+### Capability Tiers
+
+| Tier | Count | Capabilities |
+|------|:-----:|-------------|
+| **Universal** (5/5) | 10 | CLI Agent, CI/CD Action, Headless/SDK, MCP, Custom Agents, Subagents, Skills, Code Review, Context File, Scheduled Eval |
+| **Near-Universal** (4/5) | 4 | Cloud Agent, Custom Commands, Hooks, Plugin System |
+| **Common** (3/5) | 2 | Multi-Agent Orchestration, Structured Output |
+| **Differentiating** (2/5) | 6 | Browser Agent, Custom Themes, LSP Integration, Remote Agents, Safe Outputs, Web Search |
+| **Unique** (1/5) | 4 | Bot Skip (Copilot), Git Worktrees (Claude), Network Allowlist (Copilot), Shared Imports (Copilot) |
+
+> **Trend:** The universal tier grew from ~6 to 10 capabilities in 2025-2026 as platforms rapidly converged on MCP, Skills, and Subagents. The differentiating tier is where platform identity lives — choose based on which 2/5 capabilities matter most to your workflow.
+
+### MCP as the Great Equalizer
+
+MCP Integration is universal (5/5), and it **fills gaps** for platforms missing native capabilities:
+
+| Missing Capability | Platforms Without It | MCP Gap-Fill |
+|-------------------|---------------------|-------------|
+| Web Search | Claude Code, Copilot CLI, OpenCode | `@anthropic/web-search`, `@opencode/web-search`, or custom MCP server |
+| Browser Agent | Copilot CLI, Codex CLI, OpenCode | Playwright MCP server provides browser automation |
+| LSP Integration | Copilot CLI, Gemini CLI, Codex CLI | Language server MCP bridges (emerging) |
+
+> **Implication:** MCP reduces the effective gap between platforms from 26 capabilities to ~20 — the remaining differences are in orchestration, security, and developer experience rather than raw functionality.
+
+---
+
 ## Data Sources (36 total)
 
 ### Anthropic (7 sources)

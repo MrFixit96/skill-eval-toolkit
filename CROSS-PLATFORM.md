@@ -682,6 +682,70 @@ Running the full skill evaluation suite (25 skills, weekly) across platforms:
 
 ---
 
+## Cross-Platform Relationship Insights
+
+Understanding how these platforms relate to each other helps you plan migrations and multi-platform strategies.
+
+### Compatibility Triangle — Zero-Conversion Portability
+
+Three platforms share configuration formats, forming a **strong compatibility cluster**:
+
+```
+         Claude Code
+        /            \
+  plugin.json    .claude/skills/
+  SKILL.md          CLAUDE.md
+      /                  \
+Copilot CLI ———————— OpenCode
+  .agents/skills/    reads ALL three:
+  AGENTS.md          .opencode/, .claude/, .agents/
+```
+
+**What this means in practice:**
+- A SKILL.md written for this toolkit works on **Copilot CLI**, **Claude Code**, AND **OpenCode** — no changes needed
+- Plugin commands/agents built for Copilot CLI install directly on Claude Code via shared `plugin.json`
+- OpenCode is the most permissive reader — it consumes skills from all three directory conventions
+- Gemini CLI requires conversion (TOML commands, `.gemini/` paths) — medium compatibility
+- Codex CLI requires the most porting (no plugins, no skills, instructions via AGENTS.md) — lowest compatibility
+
+### Why Every Platform Can Run These Workflows
+
+All 4 workflows rely only on **universal capabilities** (supported by all 5 platforms):
+
+| Workflow | Required Capabilities | Universal? |
+|----------|----------------------|:----------:|
+| Skill Lint | CLI Agent + Headless + CI/CD | ✅ 5/5 |
+| Orchestrator | CLI Agent + Headless + Scheduled Eval + CI/CD | ✅ 5/5 |
+| Skill Improver | CLI Agent + Headless + CI/CD + Skills + Custom Agents | ✅ 5/5 |
+| GEPA Optimizer | CLI Agent + Headless + Structured Output* | ⚠️ 3/5 |
+
+> *GEPA benefits from structured JSON output (Claude Code, Gemini CLI, OpenCode) but can work without it by parsing text on Copilot CLI and Codex CLI.
+
+### Platform Leaders — Pick Based on Your Priority
+
+| If you prioritize... | Choose | Why |
+|---------------------|--------|-----|
+| **Richest hook system** | OpenCode | 30+ plugin events vs 6-8 on others |
+| **Multi-agent parallelism** | Claude Code | Agent Teams with git worktree isolation |
+| **Security sandbox** | Copilot CLI | AWF safe-outputs + network allowlist |
+| **Provider flexibility** | OpenCode | 75+ models from any vendor |
+| **Zero vendor lock-in** | Gemini CLI or OpenCode | Both Apache 2.0 open source |
+| **Lowest migration effort** | Claude Code | Shared plugin.json, direct install |
+
+### MCP Fills the Gaps
+
+Every platform supports MCP (5/5). Missing a native capability? Add it as an MCP server:
+
+| Gap | MCP Solution | Platforms That Benefit |
+|-----|-------------|----------------------|
+| Web Search | `web-search` MCP server | Claude, Copilot, OpenCode |
+| Browser Agent | Playwright MCP server | Copilot, Codex, OpenCode |
+| Extra LLM providers | Provider-specific MCP servers | Copilot (locked to GitHub Models), Codex (locked to OpenAI) |
+
+> For the full 26-capability breakdown with detailed profiles, see the [AI Coding Agent Comparison Matrix](docs/ai-coding-agent-comparison.md#key-relationship-insights).
+
+---
+
 ## Getting Started
 
 Choose your path:
