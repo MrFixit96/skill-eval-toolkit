@@ -15,7 +15,15 @@ Initial request: $ARGUMENTS
 
 **Actions**:
 1. Parse `$ARGUMENTS` for the skill name. If empty, ask user which skill to improve.
-2. Read the skill's `SKILL.md` from the skills directory.
+2. **Validate the skill name exists** before proceeding:
+   <!-- Security: validate skill name against the skills directory to prevent
+        path traversal attacks (e.g. "../../.ssh/config" as a skill name). -->
+   - List the contents of the `skills/` directory.
+   - Confirm the parsed skill name matches an existing subdirectory exactly.
+   - If the name does not match any skill directory, **stop and report an error**:
+     "Skill '{name}' not found. Available skills: {list}". Do NOT attempt to
+     read or open paths for unrecognized skill names.
+3. Read the skill's `SKILL.md` from the validated skills directory.
 3. Look for evaluation results in `results/` — find the most recent `effectiveness-*.json` file.
 4. Run Tier 1 validation to get current lint + score baseline:
    ```bash

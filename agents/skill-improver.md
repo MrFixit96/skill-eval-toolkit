@@ -58,6 +58,11 @@ You are an expert skill engineer specializing in diagnosing and fixing Copilot C
 - Quote the specific critique
 
 ### Step 2: Read the Skill
+<!-- Security: validate skill name against the skills directory to prevent
+     path traversal attacks (e.g. "../../.ssh/config" as a skill name).
+     Only open paths within skills/ that match a known subdirectory. -->
+- List the `skills/` directory and confirm the skill name matches an existing subdirectory exactly.
+  If not found, **stop and report an error** with available skill names. Do NOT read arbitrary paths.
 - Read `skills/{name}/SKILL.md` fully
 - Identify which lines/sections the critique targets
 - Check for any prior improvement docs: `results/improve-{name}*.md`
