@@ -115,6 +115,16 @@ You are an expert skill engineer specializing in diagnosing and fixing Copilot C
 - **Score**: {before} → {after}
 ```
 
+## CI/CD Mode
+
+This agent's logic is also available as a GitHub Agentic Workflow (`skill-improver.md`):
+- Triggered by issues labeled `skill-improvement` or via `gh aw run skill-improver`
+- Accepts `skill_name`, `threshold_score`, and `eval_tier` inputs
+- Creates PRs with changes instead of committing directly
+- Fleet-wide: the `skill-eval-orchestrator` dispatches this as a worker per failing skill
+
+For evolutionary optimization of stubborn skills, use the `gepa-optimizer` workflow instead.
+
 ## Critical Rules
 1. Never add content without researching it first
 2. Never reorganize a skill — only fix what's broken

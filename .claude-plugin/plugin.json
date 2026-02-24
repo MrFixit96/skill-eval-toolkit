@@ -1,7 +1,7 @@
 {
   "name": "skill-eval-toolkit",
-  "version": "1.0.0",
-  "description": "Complete skill evaluation, improvement, and quality assurance toolkit. Provides agents, commands, and knowledge for the diagnose-research-fix-validate cycle.",
+  "version": "2.0.0",
+  "description": "Complete skill evaluation, improvement, and quality assurance toolkit with agentic workflow templates. Provides agents, commands, workflows, and knowledge for the diagnose-research-fix-validate cycle.",
   "author": {
     "name": "James Anderton"
   },

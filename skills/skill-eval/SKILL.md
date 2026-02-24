@@ -18,7 +18,9 @@ A 3-tier evaluation system for measuring Copilot CLI skill quality, from free st
 - **Tier 2 (Light API)**: Semantic trigger evaluation — LLM judges whether skill descriptions activate correctly
 - **Tier 3 (Heavy API)**: A/B effectiveness comparison — LLM judges skill-augmented responses vs baseline
 - **Results**: All stored in `results/` as versioned JSON; improvement docs as `improve-{skill}-v{N}.md`
-- **CI**: GitHub Actions run Tier 1 on push/PR, Tier 2/3 weekly or on-demand
+- **CI**: GitHub Agentic Workflows (`gh aw`) run Tier 1 on push/PR, full 3-tier eval weekly or on-demand
+- **Orchestrator**: `skill-eval-orchestrator` evaluates the fleet and dispatches `skill-improver` workers
+- **GEPA**: Evolutionary optimizer uses LLM reflection on judge reasoning (ASI) to evolve skills
 
 ## Tier 1: Structural Quality
 
@@ -126,6 +128,27 @@ When a skill fails Tier 3, follow this process:
 - [ ] No HIGH-severity inaccuracies in any skill
 - [ ] Every improvement is backed by research documentation
 
+## Agentic Workflows (CI/CD)
+
+The eval framework runs autonomously via GitHub Agentic Workflows (`gh aw`):
+
+| Workflow | Trigger | What It Does |
+|----------|---------|-------------|
+| `skill-lint` | push, PR, manual | Tier 1 lint + score + triggers, comments on PRs |
+| `skill-eval` | weekly, manual | Full 3-tier eval, creates issue report |
+| `skill-improver` | issue label, manual | Autonomous diagnose → research → fix → validate, creates PR |
+| `skill-eval-orchestrator` | weekly, manual | Fleet-wide eval, dispatches `skill-improver` per failing skill |
+| `gepa-evaluator` | manual | GEPA fitness function — wraps eval scripts with ASI extraction |
+| `gepa-optimizer` | manual | Evolutionary search — evolves SKILL.md via Pareto selection |
+
+### GEPA (Genetic-Pareto Optimization)
+
+GEPA replaces the manual improvement cycle with automated evolution:
+- **ASI (Actionable Side Information)**: Judge reasoning from Tier 3 eval — tells the LLM exactly what to fix
+- **Mutation**: LLM reads ASI and proposes targeted edits (not random changes)
+- **Selection**: Multi-objective Pareto dominance across score, triggers, win rate, lint
+- **Stop condition**: score ≥95, lint pass, 100% triggers, ≥90% win rate
+
 ## Key Files
 
 - `scripts/lint-skills.py` — Tier 1 structural lint
@@ -138,5 +161,8 @@ When a skill fails Tier 3, follow this process:
 - `results/effectiveness-*.json` — Eval result history
 - `results/improve-*.md` — Improvement documentation
 - `results/research-*.md` — Research notes
+- `.github/workflows/skill-*.md` — Agentic workflow definitions
+- `.github/workflows/gepa-*.md` — GEPA evolutionary workflows
+- `.github/workflows/shared/` — Shared imports (tools, knowledge, config)
 - `SKILL_TEMPLATE.md` — Reference skill template
 - `SKILL_TEMPLATE_TASK.md` — Task skill template

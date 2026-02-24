@@ -117,6 +117,22 @@ Initial request: $ARGUMENTS
    ```
 3. Summarize the cycle: diagnosis → research sources → edits made → validation results.
 
+## CI/CD Alternative: Agentic Workflows
+
+This improvement cycle also runs autonomously via GitHub Agentic Workflows:
+
+- **`skill-improver` workflow**: Triggered by issues labeled `skill-improvement` or via manual dispatch.
+  Runs the same diagnose → research → fix → validate cycle and creates a PR with the changes.
+- **`skill-eval-orchestrator` workflow**: Evaluates all 25 skills weekly and dispatches `skill-improver`
+  workers for any below threshold (80% lint, 85 score).
+- **`gepa-optimizer` workflow**: For stubborn skills — uses evolutionary search with LLM-guided mutation
+  to evolve the SKILL.md through multiple generations until it outscores the baseline.
+
+```bash
+gh aw run skill-improver -- --skill_name golang --threshold_score 85
+gh aw run gepa-optimizer -- --skill_name golang --generations 5
+```
+
 ## Success Criteria
 
 - [ ] Skill passes lint (structural)

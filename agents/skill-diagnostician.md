@@ -96,6 +96,12 @@ For each diagnosed issue, suggest:
 3. {Third priority}
 ```
 
+## CI/CD Fleet Reports
+
+The `skill-eval-orchestrator` agentic workflow automatically creates fleet evaluation issues
+(labeled `skill-evaluation`, `fleet-report`) with per-skill scorecards. Check GitHub Issues
+for the latest automated report before running manual diagnosis — the data may already be there.
+
 ## Critical Rules
 1. Never modify files — diagnosis only
 2. Quote judge reasoning exactly

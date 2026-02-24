@@ -85,6 +85,20 @@ After all requested tiers complete:
 2. Highlight skills that need attention (score < 80, lint fail, or judge loss)
 3. Suggest running `/improve-skill <name>` for any failing skills
 
+## CI/CD Alternative: Agentic Workflows
+
+These evaluations also run automatically via GitHub Agentic Workflows:
+
+- **On push/PR**: `skill-lint` workflow runs Tier 1 and comments results
+- **Weekly + manual**: `skill-eval` workflow runs all 3 tiers and creates an issue report
+- **Fleet orchestrator**: `skill-eval-orchestrator` evaluates all 25 skills and dispatches improvement workers
+
+To trigger manually from the CLI:
+```bash
+gh aw run skill-lint              # Tier 1 only
+gh aw run skill-eval-orchestrator # Full fleet eval + auto-dispatch workers
+```
+
 ## Success Criteria
 
 - [ ] All requested tiers ran without errors
