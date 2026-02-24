@@ -11,6 +11,7 @@
 | **Copilot CLI** (GitHub) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 19/26 |
 | **Gemini CLI** (Google) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | 20/26 |
 | **Codex CLI** (OpenAI) | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | 14/26 |
+| **OpenCode** (Anomaly) | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | 17/26 |
 
 ---
 
@@ -18,48 +19,48 @@
 
 ### Core Agent Capabilities
 
-| Capability | Claude Code | Copilot CLI | Gemini CLI | Codex CLI |
-|-----------|:-----------:|:-----------:|:----------:|:---------:|
-| **CLI Agent** | ✅ `claude` | ✅ `copilot` | ✅ `gemini` | ✅ `codex` |
-| **Cloud Agent** | ✅ `--remote` | ✅ Coding agent | ✅ Jules (ext) | ✅ Codex Web |
-| **CI/CD Action** | ✅ `claude-code-action@v1` | ✅ `gh aw` | ✅ `run-gemini-cli` | ✅ `codex-action@v1` |
-| **Headless/SDK** | ✅ `claude -p` | ✅ `copilot -p` | ✅ `gemini -p` | ✅ `codex exec` + SDK |
-| **Code Review** | ✅ Plugin agent | ✅ `@copilot` on PRs | ✅ `/review` | ✅ `/review` |
-| **Browser Agent** | ✅ `--chrome` | ❌ | ✅ `browser_agent` | ❌ |
-| **Web Search** | ❌ | ❌ | ✅ Google Search | ✅ Built-in |
+| Capability | Claude Code | Copilot CLI | Gemini CLI | Codex CLI | OpenCode |
+|-----------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| **CLI Agent** | ✅ `claude` | ✅ `copilot` | ✅ `gemini` | ✅ `codex` | ✅ `opencode` |
+| **Cloud Agent** | ✅ `--remote` | ✅ Coding agent | ✅ Jules (ext) | ✅ Codex Web | ❌ |
+| **CI/CD Action** | ✅ `claude-code-action@v1` | ✅ `gh aw` | ✅ `run-gemini-cli` | ✅ `codex-action@v1` | ✅ `opencode/github@latest` |
+| **Headless/SDK** | ✅ `claude -p` | ✅ `copilot -p` | ✅ `gemini -p` | ✅ `codex exec` + SDK | ✅ `opencode run` + `serve` |
+| **Code Review** | ✅ Plugin agent | ✅ `@copilot` on PRs | ✅ `/review` | ✅ `/review` | ✅ PR review action |
+| **Browser Agent** | ✅ `--chrome` | ❌ | ✅ `browser_agent` | ❌ | ❌ |
+| **Web Search** | ❌ | ❌ | ✅ Google Search | ✅ Built-in | ❌ |
 
 ### Extensibility & Plugin System
 
-| Capability | Claude Code | Copilot CLI | Gemini CLI | Codex CLI |
-|-----------|:-----------:|:-----------:|:----------:|:---------:|
-| **Plugin System** | ✅ `.claude-plugin/` | ✅ `plugin.json` | ✅ Extensions | ❌ |
-| **Skills (Knowledge)** | ✅ `SKILL.md` | ✅ `SKILL.md` | ✅ `SKILL.md` | ❌ |
-| **Custom Agents** | ✅ `.claude/agents/` | ✅ `.github/agents/` | ✅ `.gemini/agents/` | ✅ `config.toml` roles |
-| **Custom Commands** | ✅ Commands in plugins | ✅ Slash commands | ✅ `/cmd` in `commands/` | ❌ |
-| **Context File** | ✅ `CLAUDE.md` | ✅ `copilot-instructions.md` | ✅ `GEMINI.md` | ✅ `AGENTS.md` |
-| **Hooks (Lifecycle)** | ✅ `hooks.json` | ✅ `hooks.json` | ✅ Hooks | ❌ |
-| **MCP Integration** | ✅ `.mcp.json` | ✅ GitHub MCP Server | ✅ `gemini-extension.json` | ✅ `config.toml` |
-| **Custom Themes** | ❌ | ❌ | ✅ `themes/` | ❌ |
+| Capability | Claude Code | Copilot CLI | Gemini CLI | Codex CLI | OpenCode |
+|-----------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| **Plugin System** | ✅ `.claude-plugin/` | ✅ `plugin.json` | ✅ Extensions | ❌ | ✅ `.opencode/plugins/` |
+| **Skills (Knowledge)** | ✅ `SKILL.md` | ✅ `SKILL.md` | ✅ `SKILL.md` | ❌ | ✅ `SKILL.md` |
+| **Custom Agents** | ✅ `.claude/agents/` | ✅ `.github/agents/` | ✅ `.gemini/agents/` | ✅ `config.toml` roles | ✅ `.opencode/agents/` |
+| **Custom Commands** | ✅ Commands in plugins | ✅ Slash commands | ✅ `/cmd` in `commands/` | ❌ | ✅ `.opencode/commands/` |
+| **Context File** | ✅ `CLAUDE.md` | ✅ `copilot-instructions.md` | ✅ `GEMINI.md` | ✅ `AGENTS.md` | ✅ `AGENTS.md` |
+| **Hooks (Lifecycle)** | ✅ `hooks.json` | ✅ `hooks.json` | ✅ Hooks | ❌ | ✅ Plugin events (30+) |
+| **MCP Integration** | ✅ `.mcp.json` | ✅ GitHub MCP Server | ✅ `gemini-extension.json` | ✅ `config.toml` | ✅ Local + remote MCP |
+| **Custom Themes** | ❌ | ❌ | ✅ `themes/` | ❌ | ✅ 12+ built-in |
 
 ### Multi-Agent & Orchestration
 
-| Capability | Claude Code | Copilot CLI | Gemini CLI | Codex CLI |
-|-----------|:-----------:|:-----------:|:----------:|:---------:|
-| **Subagents** | ✅ `agents/*.md` | ✅ Task tool | ✅ `agents/*.md` | ✅ Agent roles |
-| **Multi-Agent Teams** | ✅ Agent Teams | ✅ Orchestrator→Workers | ❌ | ✅ Multi-agent (exp.) |
-| **Remote Agents** | ❌ | ❌ | ✅ A2A Protocol | ❌ |
+| Capability | Claude Code | Copilot CLI | Gemini CLI | Codex CLI | OpenCode |
+|-----------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| **Subagents** | ✅ `agents/*.md` | ✅ Task tool | ✅ `agents/*.md` | ✅ Agent roles | ✅ General + Explore |
+| **Multi-Agent Teams** | ✅ Agent Teams | ✅ Orchestrator→Workers | ❌ | ✅ Multi-agent (exp.) | ❌ |
+| **Remote Agents** | ❌ | ❌ | ✅ A2A Protocol | ❌ | ✅ ACP Protocol |
 
 ### Security & Sandboxing
 
-| Capability | Claude Code | Copilot CLI | Gemini CLI | Codex CLI |
-|-----------|:-----------:|:-----------:|:----------:|:---------:|
-| **Safe Outputs** | ❌ | ✅ Threat detection pipeline | ❌ | ✅ Sandbox modes |
-| **Network Allowlist** | ❌ | ✅ `network: domains:` | ❌ | ❌ |
-| **Git Worktrees** | ✅ `--worktree` | ❌ | ❌ | ❌ |
-| **LSP Integration** | ✅ `.lsp.json` | ❌ | ❌ | ❌ |
-| **Structured Output** | ✅ `--json-schema` | ❌ | ✅ `--output-format json` | ❌ |
-| **Bot Skip** | ❌ | ✅ `on.skip-bots:` | ❌ | ❌ |
-| **Shared Imports** | ❌ | ✅ `imports:` | ❌ | ❌ |
+| Capability | Claude Code | Copilot CLI | Gemini CLI | Codex CLI | OpenCode |
+|-----------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| **Safe Outputs** | ❌ | ✅ Threat detection pipeline | ❌ | ✅ Sandbox modes | ❌ |
+| **Network Allowlist** | ❌ | ✅ `network: domains:` | ❌ | ❌ | ❌ |
+| **Git Worktrees** | ✅ `--worktree` | ❌ | ❌ | ❌ | ❌ |
+| **LSP Integration** | ✅ `.lsp.json` | ❌ | ❌ | ❌ | ✅ `opencode.json` |
+| **Structured Output** | ✅ `--json-schema` | ❌ | ✅ `--output-format json` | ❌ | ✅ `--format json` |
+| **Bot Skip** | ❌ | ✅ `on.skip-bots:` | ❌ | ❌ | ❌ |
+| **Shared Imports** | ❌ | ✅ `imports:` | ❌ | ❌ | ❌ |
 
 ---
 
@@ -186,6 +187,47 @@
 
 ---
 
+### 5. OpenCode (Anomaly)
+
+**Install:** `npm install -g opencode-ai` or `brew install anomalyco/tap/opencode` or `curl -fsSL https://opencode.ai/install | bash`
+**Latest Version:** Active development (110K+ GitHub stars)
+**License:** Apache 2.0 (open source)
+**Cost:** BYO API key — 75+ models from any provider (OpenAI, Anthropic, Google, Groq, AWS Bedrock, Azure, OpenRouter, GitHub Copilot); OpenCode Zen curated model service
+
+**Unique Strengths:**
+- **Provider-Agnostic** — 75+ models from ANY provider; not locked to one vendor. Supports OpenAI, Anthropic, Google, Groq, AWS Bedrock, Azure, OpenRouter, and GitHub Copilot.
+- **Richest Hook System** — 30+ plugin events (most of any platform): `tool.execute.before/after`, `session.*`, `file.edited`, `lsp.*`, `permission.*`, `message.*`, `tui.*`. JS/TS plugins with full SDK; `tool.execute.before` can deny tool calls.
+- **SKILL.md Compatibility** — Reads from `.opencode/skills/`, `.claude/skills/`, AND `.agents/skills/` paths. Most compatible skill system across platforms.
+- **HTTP API Server** — `opencode serve` exposes full functionality as REST API; `opencode web` adds a web UI. Unique among CLI agents.
+- **ACP Protocol** — Agent Client Protocol for agent-to-agent communication via stdin/stdout nd-JSON. Different approach from Gemini's A2A.
+- **Dual LSP Support** — Native LSP integration via `opencode.json`. Only Claude Code and OpenCode have LSP among all platforms.
+
+**Cloud Agent:** No persistent cloud agent.
+
+**Plugins:** `.opencode/plugins/` with JS/TS modules; 30+ event hooks; custom tool definitions; npm distribution; `@opencode-ai/plugin` TypeScript types.
+
+**Skills:** Native `SKILL.md` with lazy loading; per-skill permissions (allow/deny/ask); on-demand via `skill` tool. Compatible with Claude Code and Copilot CLI skill paths.
+
+**Subagents:** General + Explore built-in; @mention to invoke; child sessions with parent/child navigation; per-subagent model/tools/permissions. Sequential only (no multi-agent parallelism).
+
+**CI/CD:** `anomalyco/opencode/github@latest` with `/opencode` or `/oc` mentions in issues/PRs; schedule and workflow_dispatch triggers. `opencode github install` for easy setup.
+
+**Hooks:** 30+ plugin events — `tool.execute.before/after`, `session.created/compacted/deleted/idle/error/status`, `file.edited`, `lsp.*`, `permission.*`, `message.*`, `shell.env`, `tui.*`. `tool.execute.before` can DENY tool calls; compaction hooks for context management.
+
+**Custom Themes:** 12+ built-in themes (tokyonight, catppuccin, gruvbox, nord, etc.); custom JSON themes; per-project or global configuration.
+
+**Sources:**
+- https://opencode.ai/docs/
+- https://opencode.ai/docs/plugins/
+- https://opencode.ai/docs/agents/
+- https://opencode.ai/docs/skills/
+- https://opencode.ai/docs/github/
+- https://opencode.ai/docs/cli/
+- https://opencode.ai/docs/mcp-servers/
+- https://opencode.ai/docs/themes
+
+---
+
 ## Cross-Platform Feature Analysis
 
 ### Which platform for which use case?
@@ -198,49 +240,51 @@
 | **Web research tasks** | Gemini CLI | Codex CLI | Google Search grounding built into model |
 | **Embedded in applications** | Codex CLI | Claude Code | TypeScript SDK with thread.run(); structured API |
 | **Security-critical CI/CD** | Copilot CLI | Codex CLI | Safe-outputs pipeline + network allowlist; read-only by default |
-| **Cross-machine agents** | Gemini CLI | — | Only platform with A2A remote agent protocol |
+| **Cross-machine agents** | Gemini CLI | OpenCode | Gemini A2A protocol; OpenCode ACP protocol |
 | **Browser automation** | Gemini CLI | Claude Code | Chrome DevTools + visual model; Claude has `--chrome` |
-| **Knowledge management** | Claude Code | Copilot CLI | SKILL.md auto-invocation; Copilot shares the same format |
+| **Knowledge management** | Claude Code | OpenCode | SKILL.md auto-invocation; OpenCode reads 3 skill paths |
 | **Cost-sensitive teams** | Copilot CLI | Gemini CLI | Included with Copilot subscription; Gemini has free tier |
-| **Open-source preference** | Gemini CLI | Codex CLI | Both Apache 2.0; Gemini has extensions gallery |
+| **Open-source preference** | Gemini CLI | OpenCode | All three Apache 2.0; Gemini has extensions gallery, OpenCode has richest hooks |
+| **Provider flexibility** | OpenCode | — | 75+ models from any provider; no vendor lock-in |
+| **HTTP API / REST server** | OpenCode | Codex CLI | `opencode serve` REST API; Codex has TypeScript SDK |
 
 ### Hook Lifecycle Events Comparison
 
-| Event | Claude Code | Copilot CLI | Gemini CLI | Codex CLI |
-|-------|:-----------:|:-----------:|:----------:|:---------:|
-| Session Start | ✅ | ✅ `sessionStart` | ✅ | ❌ |
-| Session End | ✅ | ✅ `sessionEnd` | ✅ | ❌ |
-| User Prompt | ✅ | ✅ `userPromptSubmitted` | ✅ | ❌ |
-| Pre-Tool Use | ✅ `PreToolUse` | ✅ `preToolUse` | ✅ | ❌ |
-| Post-Tool Use | ✅ `PostToolUse` | ✅ `postToolUse` | ✅ | ❌ |
-| Error | ✅ | ✅ `errorOccurred` | ✅ | ❌ |
-| Stop/Completion | ✅ `Stop` | via sessionEnd | ✅ | ❌ |
-| Subagent Events | ✅ `SubagentPreToolUse` | ❌ | ❌ | ❌ |
+| Event | Claude Code | Copilot CLI | Gemini CLI | Codex CLI | OpenCode |
+|-------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| Session Start | ✅ | ✅ `sessionStart` | ✅ | ❌ | ✅ `session.created` |
+| Session End | ✅ | ✅ `sessionEnd` | ✅ | ❌ | ✅ `session.deleted` |
+| User Prompt | ✅ | ✅ `userPromptSubmitted` | ✅ | ❌ | ✅ `message.*` |
+| Pre-Tool Use | ✅ `PreToolUse` | ✅ `preToolUse` | ✅ | ❌ | ✅ `tool.execute.before` |
+| Post-Tool Use | ✅ `PostToolUse` | ✅ `postToolUse` | ✅ | ❌ | ✅ `tool.execute.after` |
+| Error | ✅ | ✅ `errorOccurred` | ✅ | ❌ | ✅ `session.error` |
+| Stop/Completion | ✅ `Stop` | via sessionEnd | ✅ | ❌ | ✅ `session.idle` |
+| Subagent Events | ✅ `SubagentPreToolUse` | ❌ | ❌ | ❌ | ❌ |
 
 ### Context File Comparison
 
-| Feature | `CLAUDE.md` | `copilot-instructions.md` | `GEMINI.md` | `AGENTS.md` |
-|---------|:-----------:|:-------------------------:|:-----------:|:-----------:|
-| Auto-loaded | ✅ | ✅ | ✅ | ✅ |
-| Hierarchical | ✅ (parent dirs) | ✅ (.github/) | ✅ | ✅ |
-| Org-level | ✅ | ✅ | ❌ | ❌ |
-| Memory/Learning | ❌ | ✅ (Copilot Memory) | ❌ | ❌ |
-| Agent Config | ❌ (separate file) | ❌ (separate file) | ❌ (separate file) | ✅ (inline) |
+| Feature | `CLAUDE.md` | `copilot-instructions.md` | `GEMINI.md` | `AGENTS.md` (Codex) | `AGENTS.md` (OpenCode) |
+|---------|:-----------:|:-------------------------:|:-----------:|:-------------------:|:----------------------:|
+| Auto-loaded | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Hierarchical | ✅ (parent dirs) | ✅ (.github/) | ✅ | ✅ | ✅ |
+| Org-level | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Memory/Learning | ❌ | ✅ (Copilot Memory) | ❌ | ❌ | ❌ |
+| Agent Config | ❌ (separate file) | ❌ (separate file) | ❌ (separate file) | ✅ (inline) | ❌ (separate file) |
 
 ### Plugin/Extension Primitives
 
-| Primitive | Claude Code | Copilot CLI | Gemini CLI | Codex CLI |
-|-----------|:-----------:|:-----------:|:----------:|:---------:|
-| Commands | ✅ `commands/*.md` | ✅ `commands/*.md` | ✅ `commands/*.toml` | ❌ |
-| Agents | ✅ `agents/*.md` | ✅ `agents/*.md` | ✅ `agents/*.md` | ❌ |
-| Skills | ✅ `skills/*/SKILL.md` | ✅ `skills/*/SKILL.md` | ✅ `skills/*/SKILL.md` | ❌ |
-| Hooks | ✅ `hooks.json` | ✅ `hooks.json` | ✅ In extension | ❌ |
-| MCP Servers | ✅ `.mcp.json` | ✅ MCP config | ✅ `gemini-extension.json` | ✅ `config.toml` |
-| LSP | ✅ `.lsp.json` | ❌ | ❌ | ❌ |
-| Themes | ❌ | ❌ | ✅ `themes/` | ❌ |
-| Manifest | `plugin.json` | `plugin.json` | `gemini-extension.json` | N/A |
-| Install Method | `claude plugin add` | `plugin install <url>` | `gemini extensions install` | N/A |
-| Marketplace | ✅ (emerging) | ✅ (emerging) | ✅ geminicli.com | ❌ |
+| Primitive | Claude Code | Copilot CLI | Gemini CLI | Codex CLI | OpenCode |
+|-----------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| Commands | ✅ `commands/*.md` | ✅ `commands/*.md` | ✅ `commands/*.toml` | ❌ | ✅ `commands/*.md` |
+| Agents | ✅ `agents/*.md` | ✅ `agents/*.md` | ✅ `agents/*.md` | ❌ | ✅ `agents/*.md` |
+| Skills | ✅ `skills/*/SKILL.md` | ✅ `skills/*/SKILL.md` | ✅ `skills/*/SKILL.md` | ❌ | ✅ `skills/*/SKILL.md` |
+| Hooks | ✅ `hooks.json` | ✅ `hooks.json` | ✅ In extension | ❌ | ✅ Plugin events |
+| MCP Servers | ✅ `.mcp.json` | ✅ MCP config | ✅ `gemini-extension.json` | ✅ `config.toml` | ✅ `opencode.json` |
+| LSP | ✅ `.lsp.json` | ❌ | ❌ | ❌ | ✅ `opencode.json` |
+| Themes | ❌ | ❌ | ✅ `themes/` | ❌ | ✅ JSON themes |
+| Manifest | `plugin.json` | `plugin.json` | `gemini-extension.json` | N/A | `plugin.json` (npm) |
+| Install Method | `claude plugin add` | `plugin install <url>` | `gemini extensions install` | N/A | npm install |
+| Marketplace | ✅ (emerging) | ✅ (emerging) | ✅ geminicli.com | ❌ | ❌ |
 
 ---
 
@@ -318,21 +362,46 @@
   Each role: own model, sandbox, instructions
 ```
 
+### OpenCode Client/Server Architecture
+```
+┌──────────────────┐     ┌──────────────┐
+│  opencode TUI    │     │ opencode web │
+│  (Bubble Tea)    │     │   (Web UI)   │
+└───────┬──────────┘     └──────┬───────┘
+        │                       │
+        └───────────┬───────────┘
+                    │
+           ┌────────┴────────┐
+           │  opencode serve │──── REST API ──▶ External Apps
+           │  (HTTP Server)  │
+           └────────┬────────┘
+                    │
+       ┌────────────┼────────────┐
+       │            │            │
+  ┌────┴────┐  ┌───┴───┐  ┌────┴─────┐
+  │  LLM    │  │  MCP  │  │ Plugins  │
+  │ 75+ any │  │Servers│  │ (JS/TS)  │
+  │ provider│  │       │  │ 30+ hooks│
+  └─────────┘  └───────┘  └──────────┘
+  Supports: OpenAI, Anthropic, Google,
+  Groq, Bedrock, Azure, OpenRouter, etc.
+```
+
 ---
 
 ## Cost Model Comparison
 
-| Factor | Claude Code | Copilot CLI | Gemini CLI | Codex CLI |
-|--------|:-----------:|:-----------:|:----------:|:---------:|
-| **Base Cost** | API per-token | Copilot subscription | Free tier / API | API per-token |
-| **CI/CD Runs** | Anthropic API billing | Free (Copilot API) | Google API billing | OpenAI API billing |
-| **Cloud Agent** | API billing | Included in subscription | Free trial / billing | ChatGPT Plus/Pro |
-| **Subscription Option** | Claude Max ($100-200/mo) | Copilot ($10-39/mo) | Google One AI | ChatGPT Pro ($200/mo) |
-| **Open Source** | ❌ | ❌ | ✅ Apache 2.0 | ✅ Apache 2.0 |
+| Factor | Claude Code | Copilot CLI | Gemini CLI | Codex CLI | OpenCode |
+|--------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| **Base Cost** | API per-token | Copilot subscription | Free tier / API | API per-token | BYO API key (any provider) |
+| **CI/CD Runs** | Anthropic API billing | Free (Copilot API) | Google API billing | OpenAI API billing | Depends on provider |
+| **Cloud Agent** | API billing | Included in subscription | Free trial / billing | ChatGPT Plus/Pro | N/A |
+| **Subscription Option** | Claude Max ($100-200/mo) | Copilot ($10-39/mo) | Google One AI | ChatGPT Pro ($200/mo) | OpenCode Zen |
+| **Open Source** | ❌ | ❌ | ✅ Apache 2.0 | ✅ Apache 2.0 | ✅ Apache 2.0 |
 
 ---
 
-## Data Sources (28 total)
+## Data Sources (36 total)
 
 ### Anthropic (7 sources)
 1. https://docs.anthropic.com/en/docs/claude-code/cli-usage
@@ -369,3 +438,13 @@
 5. https://developers.openai.com/codex/sdk
 6. https://developers.openai.com/codex/changelog/
 7. https://blog.fsck.com/2025/10/27/skills-for-openai-codex/
+
+### OpenCode / Anomaly (8 sources)
+1. https://opencode.ai/docs/
+2. https://opencode.ai/docs/plugins/
+3. https://opencode.ai/docs/agents/
+4. https://opencode.ai/docs/skills/
+5. https://opencode.ai/docs/github/
+6. https://opencode.ai/docs/cli/
+7. https://opencode.ai/docs/mcp-servers/
+8. https://opencode.ai/docs/themes

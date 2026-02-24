@@ -2,9 +2,9 @@
 
 > **Appendix to the [Skill Eval Toolkit README](README.md)**
 >
-> This plugin was built for **GitHub Copilot CLI** + **Agentic Workflows (`gh aw`)**. But the same skill evaluation and improvement patterns can be implemented on other AI coding agent platforms. This guide shows how each workflow maps to equivalent primitives on **Claude Code**, **Gemini CLI**, and **OpenAI Codex CLI**.
+> This plugin was built for **GitHub Copilot CLI** + **Agentic Workflows (`gh aw`)**. But the same skill evaluation and improvement patterns can be implemented on other AI coding agent platforms. This guide shows how each workflow maps to equivalent primitives on **Claude Code**, **Gemini CLI**, **OpenAI Codex CLI**, and **OpenCode**.
 >
-> For a full feature-by-feature comparison of all four platforms, see the [AI Coding Agent Comparison Matrix](https://github.com/MrFixit96/skill-eval-toolkit/blob/main/docs/ai-coding-agent-comparison.md).
+> For a full feature-by-feature comparison of all five platforms, see the [AI Coding Agent Comparison Matrix](https://github.com/MrFixit96/skill-eval-toolkit/blob/main/docs/ai-coding-agent-comparison.md).
 
 ---
 
@@ -20,6 +20,7 @@
   - [Claude Code](#claude-code-anthropic)
   - [Gemini CLI](#gemini-cli-google)
   - [Codex CLI](#codex-cli-openai)
+  - [OpenCode](#opencode-anomaly)
 - [Plugin Compatibility](#plugin-compatibility)
 - [Cost Comparison](#cost-comparison)
 
@@ -158,6 +159,29 @@ jobs:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
 ```
 
+#### OpenCode
+
+```yaml
+# .github/workflows/opencode-skill-lint.yml
+name: OpenCode Skill Lint
+on:
+  pull_request:
+    paths: ['skills/**']
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anomalyco/opencode/github@latest
+        with:
+          prompt: |
+            Run python scripts/lint-skills.py on all skills in skills/.
+            Post a summary of lint results as a PR comment.
+            If any skill fails lint, exit with error code 1.
+```
+
+**OpenCode advantage:** Can use ANY model provider for the lint check. Configure model in `opencode.json`.
+
 ---
 
 ### 2. Skill Eval Orchestrator (fleet management)
@@ -259,6 +283,39 @@ await Promise.all(failingSkills.map(skill =>
 ));
 ```
 
+#### OpenCode
+
+**Option A — GitHub Action with `workflow_dispatch`:**
+
+```yaml
+name: OpenCode Skill Eval Fleet
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anomalyco/opencode/github@latest
+        with:
+          prompt: |
+            Run all 3 evaluation tiers using scripts in scripts/.
+            For each skill below threshold (80% lint, 85 score):
+              Create a GitHub issue labeled skill-improvement.
+            Create a fleet summary issue with all results.
+```
+
+**Option B — `opencode serve` for local fleet eval:**
+
+```bash
+opencode serve &  # Start HTTP API server
+curl http://localhost:3000/api/run -d '{"prompt": "Run lint-skills.py and score all skills"}'
+```
+
+**OpenCode advantage:** HTTP API server mode (`opencode serve`) enables integration with ANY CI/CD system, not just GitHub Actions.
+
 ---
 
 ### 3. Skill Improver (autonomous fix cycle)
@@ -334,6 +391,34 @@ jobs:
       SKILL_NAME=${{ inputs.skill_name }}
       THRESHOLD=${{ inputs.threshold_score }}
 ```
+
+#### OpenCode
+
+OpenCode has native SKILL.md support, making it ideal for the improvement cycle:
+
+```yaml
+name: OpenCode Skill Improver
+on:
+  issues:
+    types: [opened, labeled]
+jobs:
+  improve:
+    if: contains(github.event.issue.labels.*.name, 'skill-improvement')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anomalyco/opencode/github@latest
+        with:
+          prompt: |
+            Read the skill-improvement issue body for the failing skill name and scores.
+            Use the skill tool to load skill-eval knowledge.
+            Read the failing SKILL.md, diagnose issues, research official docs.
+            Edit the SKILL.md to fix all issues.
+            Run lint-skills.py to validate.
+            Create a PR with the fixes.
+```
+
+**OpenCode advantage:** Native `skill` tool loads SKILL.md lazily — no need to cat files manually.
 
 ---
 
@@ -439,6 +524,26 @@ for (let gen = 0; gen < 5; gen++) {
 }
 ```
 
+#### OpenCode
+
+```bash
+# Use opencode run in headless mode for each generation
+for gen in $(seq 1 5); do
+  opencode run "
+    Read the current candidate SKILL.md.
+    Generate 3 mutations based on prior eval feedback.
+    For each mutation:
+      1. Write to temp file
+      2. Run lint-skills.py and score-skills.py
+      3. Record score
+    Select the best-scoring mutation as the next generation parent.
+    Save the winner to skills/<name>/SKILL.md.
+  " --format json > generation_${gen}.json
+done
+```
+
+**OpenCode advantage:** `--format json` structured output makes it easy to parse generation results in scripts. Multi-provider means you can use GPT-4.1 for mutations and Claude for evaluation.
+
 ---
 
 ## Platform-Specific Guides
@@ -502,19 +607,58 @@ claude plugin add https://github.com/MrFixit96/skill-eval-toolkit.git
 - Sandbox modes provide fine-grained security per agent role
 - Multi-agent with `max_threads` enables parallel evaluation without CI/CD fan-out
 
+### OpenCode (Anomaly)
+
+**What works out of the box:**
+- ✅ Plugin system — `.opencode/plugins/` reads JS/TS modules
+- ✅ SKILL.md — Native support, reads from `.opencode/skills/`, `.claude/skills/`, `.agents/skills/`
+- ✅ Commands — `.opencode/commands/*.md` with `$ARGUMENTS`
+- ✅ Agents — `.opencode/agents/*.md` (primary/subagent)
+- ✅ Python eval scripts are platform-agnostic
+
+**What needs adaptation:**
+- CI/CD: Use `anomalyco/opencode/github@latest` Action (examples above)
+- Config: Create `opencode.json` (project or global) with JSON Schema validation
+- Multi-provider: Set different models per task (e.g., cheap model for lint, strong model for improvement)
+
+**OpenCode-specific advantages:**
+- Multi-provider model config — use the best model for each task (GPT-4.1 for mutations, Claude for evaluation, etc.)
+- HTTP API server mode (`opencode serve`) enables integration with any CI/CD system
+- `--format json` structured output simplifies scripting and GEPA orchestration
+- Native `skill` tool loads SKILL.md lazily — no manual file reading needed
+- LSP integration provides real-time diagnostics during skill editing
+- 30+ plugin hook event types for fine-grained automation
+- MCP support for both local and remote servers with OAuth
+- Apache 2.0 open source — no platform fee
+
+**Quick start:**
+```bash
+# Install OpenCode
+npm i -g opencode-ai
+# or: brew install anomalyco/tap/opencode
+# or: curl -fsSL https://opencode.ai/install.sh | sh
+
+# Add the GitHub Action to your repo automatically
+opencode github install
+
+# Use locally
+opencode run "Run python scripts/lint-skills.py on all skills in skills/"
+```
+
 ---
 
 ## Plugin Compatibility
 
-| Component | Copilot CLI | Claude Code | Gemini CLI | Codex CLI |
-|-----------|:-----------:|:-----------:|:----------:|:---------:|
-| `plugin.json` manifest | ✅ native | ✅ native | ⚠️ convert | ❌ manual |
-| `commands/*.md` | ✅ native | ✅ native | ⚠️ convert to TOML | ❌ N/A |
-| `agents/*.md` | ✅ native | ✅ native | ✅ copy to `.gemini/agents/` | ⚠️ use config.toml roles |
-| `skills/*/SKILL.md` | ✅ native | ✅ native | ✅ copy to `.gemini/skills/` | ❌ paste into AGENTS.md |
-| `workflows/*.md` | ✅ `gh aw compile` | ⚠️ rewrite as Actions | ⚠️ rewrite as Actions | ⚠️ rewrite as Actions |
-| Eval scripts (Python) | ✅ | ✅ | ✅ | ✅ |
-| Hooks | ✅ `hooks.json` | ✅ `hooks.json` | ✅ extension hooks | ❌ |
+| Component | Copilot CLI | Claude Code | Gemini CLI | Codex CLI | OpenCode |
+|-----------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| `plugin.json` manifest | ✅ native | ✅ native | ⚠️ convert | ❌ manual | ✅ native |
+| `commands/*.md` | ✅ native | ✅ native | ⚠️ convert to TOML | ❌ N/A | ✅ native |
+| `agents/*.md` | ✅ native | ✅ native | ✅ copy to `.gemini/agents/` | ⚠️ use config.toml roles | ✅ native |
+| `skills/*/SKILL.md` | ✅ native | ✅ native | ✅ copy to `.gemini/skills/` | ❌ paste into AGENTS.md | ✅ native |
+| `workflows/*.md` | ✅ `gh aw compile` | ⚠️ rewrite as Actions | ⚠️ rewrite as Actions | ⚠️ rewrite as Actions | ⚠️ rewrite as Actions |
+| Eval scripts (Python) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Hooks | ✅ `hooks.json` | ✅ `hooks.json` | ✅ extension hooks | ❌ | ✅ plugin events (30+ types) |
+| MCP | ✅ | ✅ | ✅ | ✅ | ✅ local + remote with OAuth |
 
 **Legend:** ✅ = works as-is | ⚠️ = needs conversion | ❌ = not supported
 
@@ -524,15 +668,17 @@ claude plugin add https://github.com/MrFixit96/skill-eval-toolkit.git
 
 Running the full skill evaluation suite (25 skills, weekly) across platforms:
 
-| Scenario | Copilot CLI | Claude Code | Gemini CLI | Codex CLI |
-|----------|:-----------:|:-----------:|:----------:|:---------:|
-| **Tier 1 lint (per run)** | Free | ~$0.02 | ~$0.01 | ~$0.03 |
-| **Fleet orchestrator (weekly)** | Free | ~$0.50 | ~$0.25 | ~$0.40 |
-| **Skill improvement (per skill)** | Free | ~$0.30 | ~$0.15 | ~$0.25 |
-| **GEPA optimization (5 gen × 3 pop)** | Free | ~$5.00 | ~$2.50 | ~$4.00 |
-| **Monthly total (25 skills)** | **$0** | **~$8–12** | **~$4–6** | **~$7–10** |
+| Scenario | Copilot CLI | Claude Code | Gemini CLI | Codex CLI | OpenCode |
+|----------|:-----------:|:-----------:|:----------:|:---------:|:--------:|
+| **Tier 1 lint (per run)** | Free | ~$0.02 | ~$0.01 | ~$0.03 | ~$0.01–0.03* |
+| **Fleet orchestrator (weekly)** | Free | ~$0.50 | ~$0.25 | ~$0.40 | ~$0.20–0.50* |
+| **Skill improvement (per skill)** | Free | ~$0.30 | ~$0.15 | ~$0.25 | ~$0.10–0.30* |
+| **GEPA optimization (5 gen × 3 pop)** | Free | ~$5.00 | ~$2.50 | ~$4.00 | ~$2.00–5.00* |
+| **Monthly total (25 skills)** | **$0** | **~$8–12** | **~$4–6** | **~$7–10** | **~$3–12*** |
 
 > **Note:** Copilot CLI costs are $0 because Agentic Workflows use the Copilot API included in your GitHub Copilot subscription. Other platforms bill per API token. Estimates assume typical skill file sizes (150–200 lines) and standard model pricing as of February 2026.
+>
+> *OpenCode costs vary by provider chosen (BYO API key). The tool itself is free (Apache 2.0 open source). CI/CD uses standard GitHub Actions runner costs. Optional OpenCode Zen provides curated model access at additional cost. Range reflects cheapest provider (e.g., Gemini Flash) to most expensive (e.g., Claude Opus).
 
 ---
 
@@ -548,4 +694,6 @@ Choose your path:
 
 4. **Using Codex CLI?** → Port instructions to AGENTS.md, set up `codex-action@v1` for CI/CD, consider the TypeScript SDK for GEPA.
 
-5. **Want the comparison matrix?** → See [AI Coding Agent Comparison Matrix](docs/ai-coding-agent-comparison.md) for a full 26-capability breakdown of all four platforms.
+5. **Using OpenCode?** → Install with `npm i -g opencode-ai`, run `opencode github install` to add the Action, configure models in `opencode.json`. Native plugin/skill/agent support means minimal conversion needed.
+
+6. **Want the comparison matrix?** → See [AI Coding Agent Comparison Matrix](docs/ai-coding-agent-comparison.md) for a full capability breakdown of all five platforms.

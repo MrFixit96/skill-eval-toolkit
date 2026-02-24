@@ -228,10 +228,10 @@ skill-eval-toolkit/
 
 ## Cross-Platform Support
 
-This plugin's core primitives (commands, agents, skills) work in both **GitHub Copilot CLI** and **Claude Code** natively — they share the same `plugin.json` format. The CI/CD workflows can be adapted for **Gemini CLI** and **Codex CLI** as well.
+This plugin's core primitives (commands, agents, skills) work in **GitHub Copilot CLI**, **Claude Code**, and **OpenCode** natively — they share compatible plugin/skill formats. The CI/CD workflows can be adapted for **Gemini CLI** and **Codex CLI** as well.
 
-- 📘 **[Cross-Platform Implementation Guide](CROSS-PLATFORM.md)** — How to run these workflows on Claude Code, Gemini CLI, and Codex CLI with concrete examples for each platform.
-- 📊 **[AI Coding Agent Comparison Matrix](docs/ai-coding-agent-comparison.md)** — Full 26-capability comparison of all four platforms: feature matrix, hook events, plugin primitives, cost models, and architecture diagrams.
+- 📘 **[Cross-Platform Implementation Guide](CROSS-PLATFORM.md)** — How to run these workflows on Claude Code, Gemini CLI, Codex CLI, and OpenCode with concrete examples for each platform.
+- 📊 **[AI Coding Agent Comparison Matrix](docs/ai-coding-agent-comparison.md)** — Full 26-capability comparison of all five platforms: feature matrix, hook events, plugin primitives, cost models, and architecture diagrams.
 
 ## License
 
