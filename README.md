@@ -173,6 +173,45 @@ Seed SKILL.md → [Mutate based on ASI] → Evaluate → Pareto Select → Repea
 
 > ⚠️ GEPA workflows are expensive. They're gated behind manual `workflow_dispatch` only.
 
+### GEPA v2: Native Python API
+
+The GEPA optimizer has been upgraded from a prompt-engineered implementation to use the native `gepa` Python package (`pip install gepa`).
+
+**Key improvements:**
+- **Per-dimension Pareto scoring** across 8 objectives (FM, Trig, Body, Code, Refs, Ex, Src, Clean)
+- **Automated Scoring Insight (ASI)** identifies weak/strong dimensions with specific feedback
+- **Multi-task batch mode** optimizes all 25 skills simultaneously with cross-transfer learning
+- **Generalization validation** using train/val trigger splits + Tier 3 LLM judge
+- **Simplified workflows** — agent runs a Python script instead of reimplementing GEPA logic
+
+**Scripts:**
+| Script | Purpose |
+|--------|---------|
+| `scripts/gepa_evaluator.py` | Per-dimension evaluator with ASI output |
+| `scripts/gepa_optimize.py` | Single-skill optimizer via `optimize_anything()` |
+| `scripts/gepa_optimize_batch.py` | Multi-task batch optimizer with generalization |
+| `scripts/gepa_evaluator_tier3.py` | Tier 3 LLM judge wrapper |
+
+**Workflows:**
+| Workflow | Trigger | Description |
+|----------|---------|-------------|
+| `gepa-optimizer.md` | Manual dispatch | Optimize a single skill |
+| `gepa-batch-optimizer.md` | Manual dispatch | Batch optimize all skills |
+| `gepa-evaluator.md` | Manual dispatch | Evaluate a single skill |
+
+**Usage:**
+```bash
+# Single skill optimization
+gh aw run gepa-optimizer -F skill_name=context-engineering -F generations=5
+
+# Batch optimization (all skills)
+gh aw run gepa-batch-optimizer -F max_metric_calls=500
+
+# Local evaluation
+python scripts/gepa_evaluator.py --skill context-engineering --json
+python scripts/gepa_optimize.py --skill context-engineering --dry-run
+```
+
 ## Prerequisites
 
 - [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli/) v0.0.415+

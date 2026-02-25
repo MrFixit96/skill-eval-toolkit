@@ -426,6 +426,8 @@ jobs:
 
 **What it does:** Runs a Genetic-Pareto optimization loop: seeds a population from the current SKILL.md, generates mutations guided by Actionable Side Information (Tier 3 judge reasoning), evaluates fitness, selects Pareto-dominant candidates, and iterates. Creates a PR with the best evolved SKILL.md and a detailed evolution report.
 
+> **GEPA v2:** The optimizer now uses the native `gepa` Python package (`pip install gepa`) with per-dimension Pareto scoring across 8 objectives, multi-task batch mode, and generalization validation. See the [main README GEPA v2 section](README.md#gepa-v2-native-python-api) for scripts, workflows, and usage examples.
+
 This is the most complex workflow. Multi-agent support matters here.
 
 #### Copilot CLI (current)
