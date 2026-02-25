@@ -758,6 +758,8 @@ The platforms covered so far — Copilot CLI, Claude Code, Gemini CLI, Codex CLI
 
 **Cloud-native agent platforms** solve a different problem. They are fully managed services for building, deploying, and operating **production agent workloads** — customer-facing assistants, autonomous data pipelines, multi-step reasoning systems — that run 24/7 behind an API. The three major platforms are:
 
+> **⚠️ Disclaimer:** The cloud-service provider API research below and all related code examples were generated from official documentation crawls and have **not been tested against live APIs** due to lack of funding for cloud provider accounts. Treat code snippets as illustrative starting points — verify SDK versions, API signatures, and runtime behavior before production use.
+
 | Platform | Provider | SDK | GA API Version |
 |----------|----------|-----|----------------|
 | **AWS Bedrock Agents** | Amazon | `boto3` (`bedrock-agent`, `bedrock-agent-runtime`) | Current |

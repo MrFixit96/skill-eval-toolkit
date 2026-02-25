@@ -9,6 +9,8 @@ This matrix compares **cloud-native agent platforms** — fully managed services
 
 Cloud-native platforms address production concerns: managed hosting, enterprise security, multi-agent orchestration, persistent memory, and observability at scale. The three platforms compared are:
 
+> **⚠️ Disclaimer:** The cloud-service provider API research in this document and all related code examples were generated from official documentation crawls and have **not been tested against live APIs** due to lack of funding for cloud provider accounts. Treat code snippets as illustrative starting points — verify SDK versions, API signatures, and runtime behavior before production use.
+
 | Platform | Provider | SDK Package | Primary Framework |
 |----------|----------|-------------|-------------------|
 | **Amazon Bedrock Agents** | AWS | `boto3` (`bedrock-agent`, `bedrock-agent-runtime`) | Bedrock Agent API |
