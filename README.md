@@ -81,6 +81,7 @@ git add .github && git commit -m "Add skill-eval agentic workflows" && git push
 | `skill-eval-orchestrator` | weekly, manual | Fleet-wide eval, dispatches improvement workers per skill | 2 |
 | `gepa-evaluator` | manual | GEPA fitness function — evaluates a single skill candidate with ASI | 3 |
 | `gepa-optimizer` | manual | GEPA evolutionary search — evolves skills through Pareto selection | 3 |
+| `gepa-batch-optimizer` | manual | GEPA multi-task batch optimization across all skills | 3 |
 
 ### Shared Components
 
@@ -249,7 +250,8 @@ skill-eval-toolkit/
 │   ├── skill-improver.md     # Phase 1: autonomous fix cycle
 │   ├── skill-eval-orchestrator.md # Phase 2: fleet orchestrator
 │   ├── gepa-evaluator.md     # Phase 3: fitness function
-│   ├── gepa-optimizer.md     # Phase 3: evolutionary search
+│   ├── gepa-optimizer.md     # Phase 3: single-skill evolutionary search
+│   ├── gepa-batch-optimizer.md # Phase 3: multi-task batch optimizer
 │   └── README.md             # Workflow-specific docs
 ├── .gitignore
 ├── CROSS-PLATFORM.md         # Cross-platform implementation guide
